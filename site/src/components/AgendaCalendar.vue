@@ -71,7 +71,7 @@
                       height: minutesToPixels(getEventMinutes(event)) + 'px',
                       marginLeft: overlappingEventsCount(event) * 5 + 100/startWithEvents[1].length * index + '%'}"
                     class="my-event with-time"
-                    @click="$store.commit('removeEventFromAgenda', event.code)"
+                    @click="$store.commit('setDialogEventCode', event.code)"
                     >
                       {{ `${event.code}: ${event.title}` }}
                       <v-icon

@@ -8,6 +8,15 @@ interface Schedule {
   [key: string]: Event;
 }
 
+interface State {
+  agenda: Agenda;
+  schedule: any;
+  userName: string;
+  conName: string;
+  conEmail: string;
+  dialogEventCode: string;
+}
+
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -17,26 +26,34 @@ const store = new Vuex.Store({
     userName: '',
     conName: '',
     conEmail: '',
+    dialogEventCode: '',
   },
+
   mutations: {
-    addEventToAgenda(state: any, code: string): void {
+    addEventToAgenda(state: State, code: string): void {
       state.agenda.addEvent(state.schedule[code]);
     },
-    removeEventFromAgenda(state: any, code: string) {
+    removeEventFromAgenda(state: State, code: string) {
       state.agenda.removeEvent(code);
     },
-    setSchedule(state: any, schedule: Schedule) {
+    setSchedule(state: State, schedule: Schedule) {
       state.schedule = schedule;
     },
-    setConName(state: any, conName: string) {
+    setConName(state: State, conName: string) {
       state.conName = conName;
     },
-    setConEmail(state: any, conEmail: string) {
+    setConEmail(state: State, conEmail: string) {
       state.conEmail = conEmail;
     },
-    setUserName(state: any, userName: string) {
+    setUserName(state: State, userName: string) {
       state.userName = userName;
       localStorage.userName = userName;
+    },
+    setDialogEventCode(state: State, code: string): void {
+      state.dialogEventCode = code;
+    },
+    clearDialogEventCode(state: State): void {
+      state.dialogEventCode = '';
     },
   },
   actions: {

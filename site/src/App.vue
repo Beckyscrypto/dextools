@@ -134,6 +134,49 @@
           </v-flex>
         </v-layout>
       </v-container>
+      <v-dialog
+        :fullscreen="onMobile"
+        :value="!!dialogEvent"
+        v-if="dialogEvent"
+        lazy
+        persistent
+      >
+        <v-card>
+          <v-card-title>{{ dialogEvent.code }}: {{ dialogEvent.title }}</v-card-title>
+          <v-divider />
+          <v-card-text style="height: 500px;">
+            <p>
+              Time: {{ dialogEvent.startTime.format('ddd, HH:mm') }} - {{ dialogEvent.endTime.format('ddd, HH:mm') }}
+            </p>
+            <p v-show="dialogEvent.system">
+              System: {{ dialogEvent.system }}
+            </p>
+            <p v-show="dialogEvent.authors">
+              Author(s): {{ dialogEvent.authors }}
+            </p>
+            <p v-show="dialogEvent.presenters">
+              Presenter(s): {{ dialogEvent.presenters }}
+            </p>
+            <p>
+              {{ dialogEvent.description }}
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn
+              @click="$store.commit('clearDialogEventCode')"
+            >
+              Close
+            </v-btn>
+            <v-btn
+              @click="toggleEvent(dialogEvent.code)"
+              :color="agendaContainsEvent(dialogEvent.code) ? 'error' : 'success'"
+            >
+              {{ $store.state.agenda.containsEvent(dialogEvent.code) ? 'Remove' : 'Add' }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-content>
   </v-app>
 </template>
@@ -233,6 +276,23 @@ export default class App extends Vue {
       return this.workspaceHeight - 56;
     }
     return this.display.mode === 'split' ? this.workspaceHeight : (this.workspaceHeight * 0.4) - 5;
+  }
+
+  get dialogEvent(): Event | null {
+    return this.$store.state.dialogEventCode.length > 0
+      ? this.$store.state.schedule[this.$store.state.dialogEventCode]
+      : null;
+  }
+
+  public toggleEvent(code: string): void {
+    const action = this.$store.state.agenda.containsEvent(code)
+      ? 'removeEventFromAgenda'
+      : 'addEventToAgenda';
+    this.$store.commit(action, code);
+  }
+
+  public agendaContainsEvent(code: string): boolean {
+    return this.$store.state.agenda.containsEvent(code);
   }
 }
 </script>
